@@ -370,6 +370,9 @@ class Handler implements ExceptionHandlerContract
      */
     protected function renderHttpException(HttpException $e)
     {
+        dump("=== sample/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php ===");
+        dump("===== renderHttpException =====");
+
         $this->registerErrorViewPaths();
 
         if (view()->exists($view = "errors::{$e->getStatusCode()}")) {
@@ -389,10 +392,16 @@ class Handler implements ExceptionHandlerContract
      */
     protected function registerErrorViewPaths()
     {
+        dump("===== registerErrorViewPaths =====");
         $paths = collect(config('view.paths'));
 
+        dump($paths);
+
+//        View::replaceNamespace('errors', $paths->map(function ($path) {
+//            return "{$path}/errors";
+//        })->push(__DIR__.'/views')->all());
         View::replaceNamespace('errors', $paths->map(function ($path) {
-            return "{$path}/errors";
+            return "{$path}/errors-test";
         })->push(__DIR__.'/views')->all());
     }
 
