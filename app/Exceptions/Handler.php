@@ -34,6 +34,10 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        dump("=== app/Exceptions/Handler.php ===");
+        dump("===== report =====");
+        dump($exception);
+
         parent::report($exception);
     }
 

@@ -94,24 +94,36 @@ class Handler implements ExceptionHandlerContract
      */
     public function report(Exception $e)
     {
+        dump("=== vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php ===");
+        dump("===== report =====");
+
+        dump("111 this->shouldntReport(e)");
         if ($this->shouldntReport($e)) {
+            dump("111 if 문 안");
             return;
         }
 
+        dump("222 method_exists(e, 'report')");
+        dump(method_exists($e, 'report'));
         if (method_exists($e, 'report')) {
+            dump("222 if 문 안");
             return $e->report();
         }
 
         try {
+            dump("333 this->container->make(LoggerInterface::class)");
             $logger = $this->container->make(LoggerInterface::class);
         } catch (Exception $ex) {
             throw $e;
         }
 
+        dump("444 logger->error");
+        dump($e->getMessage());
+
         $logger->error(
             $e->getMessage(),
             array_merge($this->context(), ['exception' => $e]
-        ));
+            ));
     }
 
     /**
@@ -133,7 +145,23 @@ class Handler implements ExceptionHandlerContract
      */
     protected function shouldntReport(Exception $e)
     {
+        dump("=== vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php ===");
+        dump("===== shouldntReport =====");
+
+        dump("dontReport");
+        dump($this->dontReport);
+        dump("internalDontReport");
+        dump($this->internalDontReport);
+
         $dontReport = array_merge($this->dontReport, $this->internalDontReport);
+
+        dump("111 dontReport");
+        dump($dontReport);
+
+        dump("222 Arr::first");
+        dump(Arr::first($dontReport, function ($type) use ($e) {
+            return $e instanceof $type;
+        }));
 
         return ! is_null(Arr::first($dontReport, function ($type) use ($e) {
             return $e instanceof $type;
@@ -183,8 +211,8 @@ class Handler implements ExceptionHandlerContract
         }
 
         return $request->expectsJson()
-                        ? $this->prepareJsonResponse($request, $e)
-                        : $this->prepareResponse($request, $e);
+            ? $this->prepareJsonResponse($request, $e)
+            : $this->prepareResponse($request, $e);
     }
 
     /**
@@ -216,8 +244,8 @@ class Handler implements ExceptionHandlerContract
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         return $request->expectsJson()
-                    ? response()->json(['message' => $exception->getMessage()], 401)
-                    : redirect()->guest(route('login'));
+            ? response()->json(['message' => $exception->getMessage()], 401)
+            : redirect()->guest(route('login'));
     }
 
     /**
@@ -234,8 +262,8 @@ class Handler implements ExceptionHandlerContract
         }
 
         return $request->expectsJson()
-                    ? $this->invalidJson($request, $e)
-                    : $this->invalid($request, $e);
+            ? $this->invalidJson($request, $e)
+            : $this->invalid($request, $e);
     }
 
     /**
@@ -248,8 +276,8 @@ class Handler implements ExceptionHandlerContract
     protected function invalid($request, ValidationException $exception)
     {
         return redirect($exception->redirectTo ?? url()->previous())
-                    ->withInput($request->except($this->dontFlash))
-                    ->withErrors($exception->errors(), $exception->errorBag);
+            ->withInput($request->except($this->dontFlash))
+            ->withErrors($exception->errors(), $exception->errorBag);
     }
 
     /**
@@ -314,8 +342,8 @@ class Handler implements ExceptionHandlerContract
     {
         try {
             return config('app.debug') && class_exists(Whoops::class)
-                        ? $this->renderExceptionWithWhoops($e)
-                        : $this->renderExceptionWithSymfony($e, config('app.debug'));
+                ? $this->renderExceptionWithWhoops($e)
+                : $this->renderExceptionWithSymfony($e, config('app.debug'));
         } catch (Exception $e) {
             return $this->renderExceptionWithSymfony($e, config('app.debug'));
         }
