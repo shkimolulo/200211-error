@@ -11,6 +11,12 @@
 |
 */
 
+use App\Exceptions\TestCustomException;
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/custom-exception', function () {
+    throw new TestCustomException('사용자 정의 예외 처리 ====');
 });

@@ -98,6 +98,9 @@ class Handler implements ExceptionHandlerContract
             return;
         }
 
+        dump("=== sample/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php ===");
+        dump("===== report =====");
+        dump(method_exists($e, 'report'));
         if (method_exists($e, 'report')) {
             return $e->report();
         }
